@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('entity', '0002_auto_20180105_2022'),
-        ('geography', '0006_auto_20180105_1600'),
+        ('geography', '0006_auto_20180105_2029'),
     ]
 
     operations = [
