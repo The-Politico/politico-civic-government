@@ -10,12 +10,15 @@
   $ pip install django-politico-civic-government
   ```
 
-2. Add the app to your Django project and configure settings.
+2. Add the app and dependencies to your Django project.
 
   ```python
   INSTALLED_APPS = [
       # ...
       'rest_framework',
+      'core',
+      'entity',
+      'geography',
       'government',
   ]
   ```
