@@ -1,5 +1,7 @@
 import os
 
+import dj_database_url
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -17,6 +19,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'core',
+    'entity',
+    'geography',
     'government',
 ]
 
@@ -89,14 +94,3 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-
-#########################
-# government settings
-
-GOVERNMENT_SECRET_KEY = ''
-GOVERNMENT_AWS_ACCESS_KEY_ID = ''
-GOVERNMENT_AWS_SECRET_ACCESS_KEY = ''
-GOVERNMENT_AWS_REGION = ''
-GOVERNMENT_AWS_S3_BUCKET = ''
-GOVERNMENT_CLOUDFRONT_ALTERNATE_DOMAIN = ''
-GOVERNMENT_S3_UPLOAD_ROOT = ''

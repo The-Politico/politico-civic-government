@@ -1,7 +1,14 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework import routers
 
-from .views import Home
+from .viewsets import BodyViewSet, JurisdictionViewSet, OfficeViewSet
+
+router = routers.DefaultRouter()
+
+router.register(r'bodies', BodyViewSet)
+router.register(r'jurisdictions', JurisdictionViewSet)
+router.register(r'offices', OfficeViewSet)
 
 urlpatterns = [
-    path('', Home.as_view(), name='government-home'),
+    path('api/', include(router.urls)),
 ]

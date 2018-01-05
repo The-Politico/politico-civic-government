@@ -1,13 +1,13 @@
 ![POLITICO](https://rawgithub.com/The-Politico/src/master/images/logo/badge.png)
 
-# government
+# django-politico-civic-government
 
 ### Quickstart
 
 1. Install the app.
 
   ```
-  $ pip install government
+  $ pip install django-politico-civic-government
   ```
 
 2. Add the app to your Django project and configure settings.
@@ -18,18 +18,23 @@
       'rest_framework',
       'government',
   ]
-
-  #########################
-  # government settings
-
-  GOVERNMENT_SECRET_KEY = ''
-  GOVERNMENT_AWS_ACCESS_KEY_ID = ''
-  GOVERNMENT_AWS_SECRET_ACCESS_KEY = ''
-  GOVERNMENT_AWS_REGION = ''
-  GOVERNMENT_AWS_S3_BUCKET = ''
-  GOVERNMENT_CLOUDFRONT_ALTERNATE_DOMAIN = ''
-  GOVERNMENT_S3_UPLOAD_ROOT = ''
   ```
+
+### Bootstrapping your database
+
+**NOTE:** These commands must be run **AFTER** `bootstrap_geography` from the `django-politico-civic-geography` package.
+
+##### Bootstrap the Federal Government
+
+```
+$ python manage.py bootstrap_fed
+```
+
+##### Bootstrap state jurisdictions
+
+```
+$ python manage.py bootstrap_jurisdiction
+```
 
 ### Developing
 
