@@ -5,3 +5,4 @@ from .office import OfficeSerializer
 from .slim_office import SlimOfficeSerializer
 from .jurisdiction import JurisdictionSerializer
 from .slim_jurisdiction import SlimJurisdictionSerializer
+from .party import PartySerializer
