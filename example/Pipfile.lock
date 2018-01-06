@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0e953b5a6137480a02d95359580cd2f735ae1f7b2dfd39d974a39b4f78c3977e"
+            "sha256": "070a53042a219d139323d5c3880cfcef234520b7901e168ca4d4a80217d278c0"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -70,10 +70,6 @@
                 "sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae"
             ],
             "version": "==3.0.4"
-        },
-        "core": {
-            "editable": true,
-            "git": "ssh://git@github.com/The-Politico/politico-civic-core"
         },
         "dj-database-url": {
             "hashes": [

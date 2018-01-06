@@ -16,11 +16,17 @@
   INSTALLED_APPS = [
       # ...
       'rest_framework',
-      'core',
       'entity',
       'geography',
       'government',
   ]
+
+  #########################
+  # government settings
+
+  GEOGRAPHY_API_AUTHENTICATION_CLASS = 'rest_framework.authentication.BasicAuthentication' # default
+  GEOGRAPHY_API_PERMISSION_CLASS = 'rest_framework.permissions.IsAdminUser' # default
+  GEOGRAPHY_API_PAGINATION_CLASS = 'government.pagination.ResultsPagination' # default
   ```
 
 ### Bootstrapping your database
@@ -43,24 +49,12 @@ $ python manage.py bootstrap_jurisdiction
 
 ##### Running a development server
 
-Developing python files? Move into example directory and run the development server with pipenv.
+Move into the example directory, install dependencies and run the development server with pipenv.
 
   ```
   $ cd example
+  $ pipenv install
   $ pipenv run python manage.py runserver
-  ```
-
-Developing static assets? Move into the pluggable app's staticapp directory and start the node development server, which will automatically proxy Django's development server.
-
-  ```
-  $ cd government/staticapp
-  $ gulp
-  ```
-
-Want to not worry about it? Use the shortcut make command.
-
-  ```
-  $ make dev
   ```
 
 ##### Setting up a PostgreSQL database
@@ -71,7 +65,7 @@ Want to not worry about it? Use the shortcut make command.
   $ make database
   ```
 
-2. Add a connection URL to the `.env` file.
+2. Add a connection URL to `example/.env`.
 
   ```
   DATABASE_URL="postgres://localhost:5432/government"
