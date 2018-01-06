@@ -12,7 +12,7 @@ Create and manage the basic structure of federal, state and local government, th
   $ pip install django-politico-civic-government
   ```
 
-2. Add the app and dependencies to your Django project.
+2. Add the app and dependencies to your Django project and configure any needed settings.
 
   ```python
   INSTALLED_APPS = [
