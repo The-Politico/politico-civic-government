@@ -2,6 +2,8 @@
 
 # django-politico-civic-government
 
+Create and manage the basic structure of federal, state and local government, the POLITICO way.
+
 ### Quickstart
 
 1. Install the app.
