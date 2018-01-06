@@ -1,18 +1,9 @@
 from government.models import Jurisdiction
-from government.serializers import (JurisdictionSerializer,
-                                    SlimJurisdictionSerializer)
-from rest_framework import viewsets
-from rest_framework.authentication import BasicAuthentication
-from rest_framework.permissions import IsAdminUser
+from government.serializers import JurisdictionSerializer
+
+from .base import BaseViewSet
 
 
-class JurisdictionViewSet(viewsets.ModelViewSet):
+class JurisdictionViewSet(BaseViewSet):
     queryset = Jurisdiction.objects.all()
-    authentication_classes = (BasicAuthentication,)
-    permission_classes = (IsAdminUser,)
-
-    def get_serializer_class(self):
-        if self.action == 'list':
-            return SlimJurisdictionSerializer
-        else:
-            return JurisdictionSerializer
+    serializer_class = JurisdictionSerializer
