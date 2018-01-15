@@ -21,7 +21,9 @@ class Party(models.Model):
     short_label = models.CharField(max_length=50, null=True, blank=True)
 
     organization = models.OneToOneField(
-        Organization, related_name='political_party', on_delete=models.PROTECT)
+        Organization, related_name='political_party', on_delete=models.PROTECT,
+        blank=True, null=True,
+        help_text="All parties except Independent should attach to an Org.")
 
     ap_code = models.CharField(max_length=3, unique=True)
     aggregate_candidates = models.BooleanField(
@@ -33,7 +35,7 @@ class Party(models.Model):
     def __str__(self):
         if self.label:
             return self.label
-        return self.organization.name
+        return self.uid
 
     class Meta:
         verbose_name_plural = 'Parties'
@@ -44,5 +46,8 @@ class Party(models.Model):
         """
         self.uid = 'party:{}'.format(slugify(self.ap_code))
         if not self.slug:
-            self.slug = slugify(self.organization.name)
+            if self.organization:
+                self.slug = slugify(self.organization.name)
+            else:
+                self.slug = slugify(self.label)
         super(Party, self).save(*args, **kwargs)

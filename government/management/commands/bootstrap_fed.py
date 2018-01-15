@@ -63,6 +63,7 @@ class Command(BaseCommand):
             jurisdiction=FED,
             division=USA,
         )
+
         self.stdout.write(
             self.style.SUCCESS('Done.')
         )
