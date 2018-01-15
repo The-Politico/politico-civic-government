@@ -41,6 +41,12 @@ Create and manage the basic structure of federal, state and local government, th
 $ python manage.py bootstrap_fed
 ```
 
+##### Bootstrap major political parties
+
+```
+$ python manage.py bootstrap_parties
+```
+
 ##### Bootstrap state jurisdictions
 
 ```
