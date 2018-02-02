@@ -97,6 +97,23 @@ class Command(BaseCommand):
                 division=jurisdiction.division,
             )
 
+    def build_presidency(self):
+        USA = Division.objects.get(
+            code='00',
+            level__name='country'
+        )
+
+        print('Loading presidency')
+
+        Office.objects.get_or_create(
+            slug="president",
+            name="President of the United States",
+            label="U.S. President",
+            short_label="President",
+            jurisdiction=self.fed,
+            division=USA,
+        )
+
     def handle(self, *args, **options):
         print('Loading offices')
 
@@ -104,3 +121,4 @@ class Command(BaseCommand):
             self.build_congressional_offices(chamber)
 
         self.build_governorships()
+        self.build_presidency()

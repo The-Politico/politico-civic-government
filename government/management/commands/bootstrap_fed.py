@@ -58,14 +58,6 @@ class Command(BaseCommand):
             label="U.S. House of Representatives",
             short_label="U.S. House",
         )
-        Office.objects.get_or_create(
-            slug="president",
-            name="President of the United States",
-            label="U.S. President",
-            short_label="President",
-            jurisdiction=FED,
-            division=USA,
-        )
 
         self.stdout.write(
             self.style.SUCCESS('Done.')
