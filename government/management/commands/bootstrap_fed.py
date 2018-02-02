@@ -14,7 +14,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print('Loading the fed')
-        USA = Division.objects.get(code='00')
+        USA = Division.objects.get(
+            code='00',
+            level__name='country'
+        )
         FED, created = Jurisdiction.objects.get_or_create(
             name="U.S. Federal Government",
             division=USA

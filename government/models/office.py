@@ -24,6 +24,16 @@ class Office(models.Model):
         - florida/house/seat-2/
         - michigan/house/seat-2/
     """
+    FIRST_CLASS = '1'
+    SECOND_CLASS = '2'
+    THIRD_CLASS = '3'
+
+    SENATE_CLASSES = (
+        (FIRST_CLASS, '1st Class'),
+        (SECOND_CLASS, '2nd Class'),
+        (THIRD_CLASS, '3rd Class'),
+    )
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     uid = models.CharField(
         max_length=500,
@@ -34,6 +44,9 @@ class Office(models.Model):
     name = models.CharField(max_length=255)
     label = models.CharField(max_length=255, blank=True)
     short_label = models.CharField(max_length=50, null=True, blank=True)
+    senate_class = models.CharField(
+        max_length=1, choices=SENATE_CLASSES, null=True, blank=True
+    )
 
     division = models.ForeignKey(
         Division, related_name='offices', on_delete=models.PROTECT)
