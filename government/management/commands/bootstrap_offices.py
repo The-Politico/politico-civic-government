@@ -34,9 +34,13 @@ class Command(BaseCommand):
                 continue
 
             if chamber == 'senate':
+                for class_tup in Office.SENATE_CLASSES:
+                    if class_tup[0] == member['senate_class']:
+                        senate_class = class_tup[0]
+
                 name = 'U.S. Senate, {0}, Class {1}'.format(
                     full_state.name,
-                    member['senate_class']
+                    senate_class
                 )
                 division_level = DivisionLevel.objects.get(
                     name='state'
@@ -47,6 +51,8 @@ class Command(BaseCommand):
                 )
 
             elif chamber == 'house':
+                senate_class = None
+
                 name = 'U.S. House, {0}, District {1}'.format(
                     full_state.name,
                     member['district']
@@ -76,7 +82,8 @@ class Command(BaseCommand):
                 label=name,
                 jurisdiction=self.fed,
                 division=division,
-                body=body
+                body=body,
+                senate_class=senate_class
             )
 
     def build_governorships(self):
