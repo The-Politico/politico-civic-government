@@ -31,7 +31,7 @@ class Command(BaseCommand):
             defaults={
                 'label': 'Republican',
                 'short_label': 'GOP',
-                'ap_code': 'gop',
+                'ap_code': 'GOP',
                 'aggregate_candidates': False
             }
         )
@@ -50,7 +50,7 @@ class Command(BaseCommand):
             defaults={
                 'label': 'Democrat',
                 'short_label': 'Dem',
-                'ap_code': 'dem',
+                'ap_code': 'Dem',
                 'aggregate_candidates': False
             }
         )
@@ -69,7 +69,7 @@ class Command(BaseCommand):
             defaults={
                 'label': 'Libertarian',
                 'short_label': 'Lib',
-                'ap_code': 'lib',
+                'ap_code': 'Lib',
             }
         )
 
@@ -87,7 +87,7 @@ class Command(BaseCommand):
             defaults={
                 'label': 'Green',
                 'short_label': 'Grn',
-                'ap_code': 'grn',
+                'ap_code': 'Grn',
             }
         )
 
@@ -105,7 +105,7 @@ class Command(BaseCommand):
             defaults={
                 'label': 'Constitution Party',
                 'short_label': 'Const.',
-                'ap_code': 'cst',
+                'ap_code': 'CST',
             }
         )
 
@@ -123,7 +123,7 @@ class Command(BaseCommand):
             defaults={
                 'label': 'Independent American Party',
                 'short_label': 'IAP',
-                'ap_code': 'iap',
+                'ap_code': 'IAP',
             }
         )
 
@@ -132,7 +132,7 @@ class Command(BaseCommand):
             defaults={
                 'label': 'Independent',
                 'short_label': 'Ind',
-                'ap_code': 'ind',
+                'ap_code': 'Ind',
             }
         )
 
