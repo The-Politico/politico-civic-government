@@ -58,7 +58,7 @@ class Office(models.Model):
         on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.uid
+        return self.name
 
     @property
     def is_executive(self):
