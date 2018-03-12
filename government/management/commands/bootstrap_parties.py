@@ -49,7 +49,7 @@ class Command(BaseCommand):
             organization=dem,
             defaults={
                 'label': 'Democrat',
-                'short_label': 'Dem',
+                'short_label': 'Dem.',
                 'ap_code': 'Dem',
                 'aggregate_candidates': False
             }
@@ -68,7 +68,7 @@ class Command(BaseCommand):
             organization=lib,
             defaults={
                 'label': 'Libertarian',
-                'short_label': 'Lib',
+                'short_label': 'Lib.',
                 'ap_code': 'Lib',
             }
         )
