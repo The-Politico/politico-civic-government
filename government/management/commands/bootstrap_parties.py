@@ -49,7 +49,7 @@ class Command(BaseCommand):
             organization=dem,
             defaults={
                 'label': 'Democrat',
-                'short_label': 'Dem.',
+                'short_label': 'Dem',
                 'ap_code': 'Dem',
                 'aggregate_candidates': False
             }
@@ -68,7 +68,7 @@ class Command(BaseCommand):
             organization=lib,
             defaults={
                 'label': 'Libertarian',
-                'short_label': 'Lib.',
+                'short_label': 'Libt',
                 'ap_code': 'Lib',
             }
         )
@@ -86,7 +86,7 @@ class Command(BaseCommand):
             organization=grn,
             defaults={
                 'label': 'Green',
-                'short_label': 'Grn',
+                'short_label': 'GP',
                 'ap_code': 'Grn',
             }
         )
@@ -131,7 +131,7 @@ class Command(BaseCommand):
             label='Independent',
             defaults={
                 'label': 'Independent',
-                'short_label': 'Ind',
+                'short_label': 'Indp',
                 'ap_code': 'Ind',
             }
         )
