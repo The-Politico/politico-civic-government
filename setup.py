@@ -1,10 +1,10 @@
 from setuptools import find_packages, setup
 
 setup(
-    name='django-politico-civic-government',
-    version='0.0.0-alpha',
+    name='politico-civic-government',
+    version='0.1.0',
     description='',
-    url='https://github.com/The-Politico/django-politico-civic-government',
+    url='https://github.com/The-Politico/politico-civic-government',
     author='POLITICO interactive news',
     author_email='interactives@politico.com',
     license='MIT',
@@ -26,7 +26,12 @@ setup(
     packages=find_packages(exclude=['docs', 'tests', 'example']),
 
     install_requires=[
+        'django',
         'djangorestframework',
+        'dj-database-url',
+        'psycopg2',
+        'politico-civic-entity',
+        'politico-civic-geography',
         'tqdm',
         'us',
     ],
