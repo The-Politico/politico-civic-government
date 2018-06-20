@@ -33,8 +33,6 @@ class Party(models.Model):
     )
 
     def __str__(self):
-        if self.label:
-            return self.label
         return self.uid
 
     class Meta:
