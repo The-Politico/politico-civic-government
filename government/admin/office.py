@@ -16,7 +16,7 @@ class OfficeAdmin(admin.ModelAdmin):
         ('body__label', custom_titled_filter('body')),
         ('jurisdiction__name', custom_titled_filter('jurisdiction'))
     )
-    search_fields = ('name', )
+    search_fields = ('name', 'label')
     ordering = ('name', 'body__label', 'jurisdiction__name')
     readonly_fields = ('slug', 'uid')
 
