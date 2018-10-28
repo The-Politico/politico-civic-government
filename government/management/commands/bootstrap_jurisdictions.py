@@ -1,8 +1,9 @@
+from tqdm import tqdm
+
 import us
 from django.core.management.base import BaseCommand
 from geography.models import Division, DivisionLevel
 from government.models import Jurisdiction
-from tqdm import tqdm
 
 
 class Command(BaseCommand):
@@ -19,10 +20,10 @@ class Command(BaseCommand):
         )
         state_level = DivisionLevel.objects.get(name="state")
         for state in tqdm(us.states.STATES):
-            division = Division.objects.get(code=state.fips, level=state_level)
-            name = "{} State Government".format(state.name)
             if str(state.fips) == "11":
                 continue
+            division = Division.objects.get(code=state.fips, level=state_level)
+            name = "{} State Government".format(state.name)
             Jurisdiction.objects.get_or_create(
                 name=name, division=division, parent=FED
             )
