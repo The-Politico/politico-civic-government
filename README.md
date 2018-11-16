@@ -9,7 +9,7 @@ Create and manage the basic structure of federal, state and local government, th
 1. Install the app.
 
   ```
-  $ pip install django-politico-civic-government
+  $ pip install politico-civic-government
   ```
 
 2. Add the app and dependencies to your Django project and configure any needed settings.
@@ -22,35 +22,18 @@ Create and manage the basic structure of federal, state and local government, th
       'geography',
       'government',
   ]
+```
 
-  #########################
-  # government settings
 
-  GEOGRAPHY_API_AUTHENTICATION_CLASS = 'rest_framework.authentication.BasicAuthentication' # default
-  GEOGRAPHY_API_PERMISSION_CLASS = 'rest_framework.permissions.IsAdminUser' # default
-  GEOGRAPHY_API_PAGINATION_CLASS = 'government.pagination.ResultsPagination' # default
-  ```
 
 ### Bootstrapping your database
 
-**NOTE:** These commands must be run **AFTER** `bootstrap_geography` from the `django-politico-civic-geography` package.
+1. Ensure `PROPUBLICA_CONGRESS_API_KEY` is exported into your environment. If you don't have an API key for the ProPublica Congress API, you can request one [here](https://www.propublica.org/datastore/api/propublica-congress-api).
 
-##### Bootstrap the Federal Government
-
-```
-$ python manage.py bootstrap_fed
-```
-
-##### Bootstrap major political parties
+2. Bootstrap the database.
 
 ```
-$ python manage.py bootstrap_parties
-```
-
-##### Bootstrap state jurisdictions
-
-```
-$ python manage.py bootstrap_jurisdiction
+$ python manage.py bootstrap_government
 ```
 
 ### Developing
