@@ -1,6 +1,6 @@
 ![POLITICO](https://rawgithub.com/The-Politico/src/master/images/logo/badge.png)
 
-# django-politico-civic-government
+# politico-civic-government
 
 Create and manage the basic structure of federal, state and local government, the POLITICO way.
 
