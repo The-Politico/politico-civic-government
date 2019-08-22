@@ -45,7 +45,7 @@ class BodyAdmin(admin.ModelAdmin):
     )
     search_fields = ("label",)
     ordering = ("label", "jurisdiction__name")
-    readonly_fields = ("uid",)
+    readonly_fields = ["uid"]
 
     fieldsets = (
         ("Names and labeling", {"fields": ("label", "short_label")}),
