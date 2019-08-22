@@ -1,9 +1,19 @@
+# Imports from python.
 import uuid
 
+
+# Imports from Django.
 from django.db import models
+
+
+# Imports from other dependencies.
 from geography.models import Division
+from uuslug import slugify
+from uuslug import uuslug
+
+
+# Imports from government.
 from government.constants import STOPWORDS
-from uuslug import slugify, uuslug
 
 
 class Office(models.Model):
