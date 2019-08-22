@@ -1,8 +1,15 @@
-from tqdm import tqdm
-
-import us
+# Imports from Django.
 from django.core.management.base import BaseCommand
-from geography.models import Division, DivisionLevel
+
+
+# Imports from other dependencies.
+from geography.models import Division
+from geography.models import DivisionLevel
+from tqdm import tqdm
+import us
+
+
+# Imports from government.
 from government.models import Jurisdiction
 
 
