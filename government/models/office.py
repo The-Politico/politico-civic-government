@@ -1,22 +1,20 @@
-# Imports from python.
-import uuid
-
-
 # Imports from Django.
 from django.db import models
 
 
 # Imports from other dependencies.
+from civic_utils.models import CivicBaseModel
+from civic_utils.models import CommonIdentifiersMixin
+from civic_utils.models import UUIDMixin
 from geography.models import Division
 from uuslug import slugify
-from uuslug import uuslug
 
 
 # Imports from government.
 from government.constants import STOPWORDS
 
 
-class Office(models.Model):
+class Office(CommonIdentifiersMixin, UUIDMixin, CivicBaseModel):
     """
     An office represents a post, seat or position occuppied by an individual
     as a result of an election.
@@ -35,6 +33,9 @@ class Office(models.Model):
         - michigan/house/seat-2/
     """
 
+    uid_prefix = "office"
+    default_serializer = "government.serializers.OfficeSerializer"
+
     FIRST_CLASS = "1"
     SECOND_CLASS = "2"
     THIRD_CLASS = "3"
@@ -45,10 +46,8 @@ class Office(models.Model):
         (THIRD_CLASS, "3rd Class"),
     )
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    uid = models.CharField(max_length=500, editable=False, blank=True)
-
     slug = models.SlugField(blank=True, max_length=255, editable=True)
+
     name = models.CharField(max_length=255)
     label = models.CharField(max_length=255, blank=True)
     short_label = models.CharField(max_length=50, null=True, blank=True)
@@ -77,34 +76,29 @@ class Office(models.Model):
     def __str__(self):
         return self.label
 
+    def save(self, *args, **kwargs):
+        """
+        **uid field**: :code:`office:{slug}`
+        **identifier**: :code:`<body uid/jurisdiction uid>__<this uid>`
+        """
+        self.generate_common_identifiers(
+            always_overwrite_slug=False, always_overwrite_uid=True
+        )
+
+        super(Office, self).save(*args, **kwargs)
+
+    def get_natural_key_definition(self):
+        if self.body:
+            return ["body", "uid"]
+
+        return ["jurisdiction", "uid"]
+
+    def get_uid_base_field(self):
+        return slugify(
+            " ".join(w for w in self.name.split() if w not in STOPWORDS)
+        )
+
     @property
     def is_executive(self):
         """Is this an executive office?"""
         return self.body is None
-
-    def save(self, *args, **kwargs):
-        """
-        **uid**: :code:`{body.uid | jurisdiction.uid}_office:{slug}`
-        """
-        stripped_name = " ".join(
-            w for w in self.name.split() if w not in STOPWORDS
-        )
-
-        if not self.slug:
-            self.slug = uuslug(
-                stripped_name,
-                instance=self,
-                max_length=100,
-                separator="-",
-                start_no=2,
-            )
-        if self.body:
-            self.uid = "{}_office:{}".format(
-                self.body.uid, slugify(stripped_name)
-            )
-        else:
-            self.uid = "{}_office:{}".format(
-                self.jurisdiction.uid, slugify(stripped_name)
-            )
-
-        super(Office, self).save(*args, **kwargs)

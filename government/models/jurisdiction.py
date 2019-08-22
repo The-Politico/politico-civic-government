@@ -1,22 +1,20 @@
-# Imports from python.
-import uuid
-
-
 # Imports from Django.
 from django.db import models
 
 
 # Imports from other dependencies.
+from civic_utils.models import CivicBaseModel
+from civic_utils.models import CommonIdentifiersMixin
+from civic_utils.models import UUIDMixin
 from geography.models import Division
 from uuslug import slugify
-from uuslug import uuslug
 
 
 # Imports from government.
 from government.constants import STOPWORDS
 
 
-class Jurisdiction(models.Model):
+class Jurisdiction(CommonIdentifiersMixin, UUIDMixin, CivicBaseModel):
     """
     A Jurisdiction represents a logical unit of governance, comprised of
     a collection of legislative bodies, administrative offices or public
@@ -26,12 +24,10 @@ class Jurisdiction(models.Model):
     of the District of Columbia, Columbia Missouri City Government, etc.
     """
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    uid = models.CharField(max_length=500, editable=False, blank=True)
+    natural_key_fields = ["jurisdiction", "uid"]
+    uid_prefix = "jurisdiction"
+    default_serializer = "government.serializers.JurisdictionSerializer"
 
-    slug = models.SlugField(
-        blank=True, max_length=255, unique=True, editable=False
-    )
     name = models.CharField(max_length=255)
 
     division = models.ForeignKey(Division, null=True, on_delete=models.PROTECT)
@@ -49,21 +45,14 @@ class Jurisdiction(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        **uid**: :code:`{division.uid}_jurisdiction:{slug}`
+        **uid field**: :code:`jurisdiction:{slug}`
+        **identifier**: :code:`<division uid>__<this uid>`
         """
-        stripped_name = " ".join(
-            w for w in self.name.split() if w not in STOPWORDS
-        )
-
-        self.slug = uuslug(
-            stripped_name,
-            instance=self,
-            max_length=100,
-            separator="-",
-            start_no=2,
-        )
-        self.uid = "{}_jurisdiction:{}".format(
-            self.division.uid, slugify(stripped_name)
-        )
+        self.generate_common_identifiers()
 
         super(Jurisdiction, self).save(*args, **kwargs)
+
+    def get_uid_base_field(self):
+        return slugify(
+            " ".join(w for w in self.name.split() if w not in STOPWORDS)
+        )
