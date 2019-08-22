@@ -1,10 +1,16 @@
+# Imports from Django.
 from django.contrib import admin
 
-from government.models import Body, Jurisdiction, Office, Party
-from .body import BodyAdmin
-from .jurisdiction import JurisdictionAdmin
-from .office import OfficeAdmin
-from .party import PartyAdmin
+
+# Imports from government.
+from government.admin.body import BodyAdmin
+from government.admin.jurisdiction import JurisdictionAdmin
+from government.admin.office import OfficeAdmin
+from government.admin.party import PartyAdmin
+from government.models import Body
+from government.models import Jurisdiction
+from government.models import Office
+from government.models import Party
 
 
 admin.site.register(Body, BodyAdmin)
