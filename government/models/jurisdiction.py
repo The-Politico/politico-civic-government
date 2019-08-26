@@ -24,7 +24,7 @@ class Jurisdiction(CommonIdentifiersMixin, UUIDMixin, CivicBaseModel):
     of the District of Columbia, Columbia Missouri City Government, etc.
     """
 
-    natural_key_fields = ["jurisdiction", "uid"]
+    natural_key_fields = ["division", "slug"]
     uid_prefix = "jurisdiction"
     default_serializer = "government.serializers.JurisdictionSerializer"
 
@@ -56,3 +56,6 @@ class Jurisdiction(CommonIdentifiersMixin, UUIDMixin, CivicBaseModel):
         return slugify(
             " ".join(w for w in self.name.split() if w not in STOPWORDS)
         )
+
+    def get_uid_prefix(self):
+        return f"{self.division.uid}__{self.uid_prefix}"

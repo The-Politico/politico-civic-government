@@ -4,26 +4,29 @@ from django.db import models
 
 # Imports from other dependencies.
 from civic_utils.models import CivicBaseModel
+from civic_utils.models import CommonIdentifiersMixin
 from civic_utils.models import UUIDMixin
 from entity.models import Organization
 from uuslug import slugify
 
 
-class Party(UUIDMixin, CivicBaseModel):
+class Party(CommonIdentifiersMixin, UUIDMixin, CivicBaseModel):
     """
     A political party.
     """
 
-    natural_key_fields = []
-    default_serializer = ""
+    natural_key_fields = ["slug"]
+    uid_prefix = "party"
+    default_serializer = "government.serializers.PartySerializer"
 
-    uid = models.CharField(max_length=500, editable=False, blank=True)
     slug = models.SlugField(
         blank=True,
         max_length=255,
         editable=True,
+        unique=True,
         help_text="Customizable slug. Defaults to slugged Org name.",
     )
+
     label = models.CharField(max_length=255, blank=True)
     short_label = models.CharField(max_length=50, null=True, blank=True)
 
@@ -53,12 +56,19 @@ class Party(UUIDMixin, CivicBaseModel):
 
     def save(self, *args, **kwargs):
         """
-        **uid field/identifier**: :code:`party:{apcode}`
+        **uid field/identifier**: :code:`party:{slug}`
         """
-        self.uid = "party:{}".format(slugify(self.ap_code))
-        if not self.slug:
-            if self.organization:
-                self.slug = slugify(self.organization.name)
-            else:
-                self.slug = slugify(self.label)
+        self.generate_common_identifiers(
+            always_overwrite_slug=False, always_overwrite_uid=True
+        )
+
         super(Party, self).save(*args, **kwargs)
+
+    def get_uid_base_field(self):
+        if self.organization:
+            return slugify(self.organization.name)
+
+        return slugify(self.label)
+
+    def get_uid_suffix(self):
+        return self.slug

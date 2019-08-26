@@ -73,6 +73,9 @@ class Office(CommonIdentifiersMixin, UUIDMixin, CivicBaseModel):
         on_delete=models.PROTECT,
     )
 
+    class Meta:
+        unique_together = ("body", "jurisdiction", "slug")
+
     def __str__(self):
         return self.label
 
@@ -89,14 +92,22 @@ class Office(CommonIdentifiersMixin, UUIDMixin, CivicBaseModel):
 
     def get_natural_key_definition(self):
         if self.body:
-            return ["body", "uid"]
+            return ["body", "slug"]
 
-        return ["jurisdiction", "uid"]
+        return ["jurisdiction", "slug"]
 
     def get_uid_base_field(self):
         return slugify(
             " ".join(w for w in self.name.split() if w not in STOPWORDS)
         )
+
+    def get_uid_prefix(self):
+        if self.body:
+            return f"{self.body.uid}__{self.uid_prefix}"
+        return f"{self.jurisdiction.uid}__{self.uid_prefix}"
+
+    def get_uid_suffix(self):
+        return self.slug
 
     @property
     def is_executive(self):

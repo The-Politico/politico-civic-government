@@ -30,7 +30,7 @@ class Body(CommonIdentifiersMixin, UUIDMixin, CivicBaseModel):
         - michigan/senate/
     """
 
-    natural_key_fields = ["jurisdiction", "uid"]
+    natural_key_fields = ["jurisdiction", "slug"]
     uid_prefix = "body"
     default_serializer = "government.serializers.BodySerializer"
 
@@ -58,6 +58,7 @@ class Body(CommonIdentifiersMixin, UUIDMixin, CivicBaseModel):
     )
 
     class Meta:
+        unique_together = ("jurisdiction", "slug")
         verbose_name_plural = "Bodies"
 
     def __str__(self):
@@ -80,3 +81,9 @@ class Body(CommonIdentifiersMixin, UUIDMixin, CivicBaseModel):
                 w for w in self.organization.name.split() if w not in STOPWORDS
             )
         )
+
+    def get_uid_prefix(self):
+        return f"{self.jurisdiction.uid}__{self.uid_prefix}"
+
+    def get_uid_suffix(self):
+        return self.slug
