@@ -4,21 +4,22 @@ verify_ssl = true
 name = "pypi"
 
 [requires]
-
 python_version = "3.6"
 
+[pipenv]
+allow_prereleases = true
+
 [packages]
-pytest = "*"
-"flake8" = "*"
 django = ">=2.2"
 djangorestframework = "*"
 "dj-database-url" = "*"
 "psycopg2-binary" = "*"
-"politico-civic-utils" = "~=0.0.7"
-"politico-civic-entity" = {file = "https://github.com/The-Politico/politico-civic-entity/archive/kangaroo/common-base-classes.tar.gz"}
-"politico-civic-geography" = {file = "https://github.com/The-Politico/politico-civic-geography/archive/kangaroo/common-base-classes.tar.gz"}
-
+"politico-civic-utils" = "~=1.0a1.dev1"
+"politico-civic-entity" = "~=1.0a1.dev1"
+"politico-civic-geography" = "~=1.0a1.dev1"
 "government" = {path = "./..", editable = true}
 
 [dev-packages]
 ipython = "*"
+pytest = "*"
+"flake8" = "*"
