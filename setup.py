@@ -12,20 +12,12 @@ REPO_URL = "https://github.com/The-Politico/politico-civic-government/"
 
 PYPI_VERSION = ".".join(str(v) for v in __version__)
 
-with open(os.path.join(os.path.dirname(__file__), "README.md")) as readme:
-    README = readme.read()
-
 
 setup(
     name="politico-civic-government",
     version=PYPI_VERSION,
     packages=find_packages(exclude=["docs", "tests", "example"]),
     license="MIT",
-    description=(
-        "Manage government and party organizations, the POLITICO way."
-    ),
-    long_description=README,
-    long_description_content_type="text/markdown",
     url=REPO_URL,
     download_url="{repo_url}archive/{version}.tar.gz".format(
         **{"repo_url": REPO_URL, "version": PYPI_VERSION}
