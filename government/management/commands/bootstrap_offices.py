@@ -30,7 +30,7 @@ class Command(BaseCommand):
 
     def build_congressional_offices(self, chamber):
         r = requests.get(
-            "{0}{1}/{2}/members.json".format(BASE_URL, "115", chamber),
+            "{0}{1}/{2}/members.json".format(BASE_URL, "116", chamber),
             headers={
                 "X-API-Key": os.environ.get("PROPUBLICA_CONGRESS_API_KEY")
             },
