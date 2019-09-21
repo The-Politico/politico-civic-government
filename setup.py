@@ -48,6 +48,7 @@ setup(
         "politico-civic-geography",
         "tqdm",
         "us",
+        "us-elections",
     ],
     extras_require={
         "dev": ["sphinx", "sphinxcontrib-django", "sphinx-rtd-theme"],

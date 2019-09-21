@@ -1,17 +1,12 @@
-# Imports from python.
-import os
-
-
 # Imports from Django.
 from django.core.management.base import BaseCommand
 
 
 # Imports from other dependencies.
+from elections import ElectionYear
 from geography.models import Division
 from geography.models import DivisionLevel
-import requests
 from tqdm import tqdm
-import us
 
 
 # Imports from government.
@@ -20,71 +15,55 @@ from government.models import Jurisdiction
 from government.models import Office
 
 
-BASE_URL = "https://api.propublica.org/congress/v1/"
-
-
 class Command(BaseCommand):
-    help = "Scrapes the ProPublica Congress API for federal Congress offices"
+    help = "Creates federal offices"
 
     fed = Jurisdiction.objects.get(name="U.S. Federal Government")
 
-    def build_congressional_offices(self, chamber):
-        r = requests.get(
-            "{0}{1}/{2}/members.json".format(BASE_URL, "116", chamber),
-            headers={
-                "X-API-Key": os.environ.get("PROPUBLICA_CONGRESS_API_KEY")
-            },
-        )
+    def build_house_offices(self):
+        election_year = ElectionYear(2020)
+        house_seats = election_year.seats.house
+        division_level = DivisionLevel.objects.get(name="district")
+        body = Body.objects.get(slug="house", jurisdiction=self.fed)
+        for seat in tqdm(house_seats):
+            division = Division.objects.get(
+                level=division_level,
+                parent__code=seat.state.fips,
+                code="00" if not seat.district else seat.district.zfill(2),
+            )
 
-        members = r.json()
-
-        print("Loading U.S. {0} offices".format(chamber.title()))
-        for member in tqdm(members["results"][0]["members"]):
-            full_state = us.states.lookup(member["state"])
-            if int(full_state.fips) > 56 or int(full_state.fips) == 11:
-                continue
-
-            if chamber == "senate":
-                for class_tup in Office.SENATE_CLASSES:
-                    if class_tup[0] == member["senate_class"]:
-                        senate_class = class_tup[0]
-
-                name = "U.S. Senate, {0}, Class {1}".format(
-                    full_state.name, senate_class
-                )
-                division_level = DivisionLevel.objects.get(name="state")
-                division = Division.objects.get(
-                    level=division_level,
-                    code_components__postal=member["state"],
-                )
-
-            elif chamber == "house":
-                senate_class = None
-
-                name = "U.S. House, {0}, District {1}".format(
-                    full_state.name, member["district"]
-                )
-                division_level = DivisionLevel.objects.get(name="district")
-
-                code = (
-                    "00" if member["at_large"] else member["district"].zfill(2)
-                )
-
-                division = Division.objects.get(
-                    level=division_level,
-                    parent__code_components__postal=member["state"],
-                    code=code,
-                )
-
-            body = Body.objects.get(slug=chamber, jurisdiction=self.fed)
-
-            Office.objects.get_or_create(
-                name=name,
-                label=name,
+            Office.objects.update_or_create(
                 jurisdiction=self.fed,
                 division=division,
                 body=body,
-                senate_class=senate_class,
+                senate_class=None,
+                defaults={"name": seat.__str__(), "label": seat.__str__()},
+            )
+
+    def build_senate_offices(self, year):
+        def translate_senate_class(s):
+            if s == "I":
+                return "1"
+            if s == "II":
+                return "2"
+            if s == "III":
+                return "3"
+            return s
+
+        election_year = ElectionYear(year)
+        senate_seats = election_year.seats.senate
+        division_level = DivisionLevel.objects.get(name="state")
+        body = Body.objects.get(slug="senate", jurisdiction=self.fed)
+        for seat in tqdm(senate_seats):
+            division = Division.objects.get(
+                level=division_level, code=seat.state.fips
+            )
+            Office.objects.update_or_create(
+                jurisdiction=self.fed,
+                division=division,
+                body=body,
+                senate_class=translate_senate_class(seat.senate_class),
+                defaults={"name": seat.__str__(), "label": seat.__str__()},
             )
 
     def build_governorships(self):
@@ -122,8 +101,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print("Loading offices")
 
-        for chamber in ["senate", "house"]:
-            self.build_congressional_offices(chamber)
-
+        self.build_house_offices()
+        self.build_senate_offices(2018)
+        self.build_senate_offices(2020)
+        self.build_senate_offices(2022)
         self.build_governorships()
         self.build_presidency()

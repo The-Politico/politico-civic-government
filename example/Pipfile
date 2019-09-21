@@ -10,14 +10,15 @@ python_version = "3.6"
 allow_prereleases = true
 
 [packages]
-django = ">=2.2"
+django = "==2.2"
 djangorestframework = "*"
 "dj-database-url" = "*"
 "psycopg2-binary" = "*"
 "politico-civic-utils" = "~=1.0a1.dev1"
 "politico-civic-entity" = "~=1.0a1.dev1"
 "politico-civic-geography" = "~=1.0a1.dev2"
-"government" = {path = "./..", editable = true}
+government = {path = "./..",editable = true}
+us-elections = "*"
 
 [dev-packages]
 ipython = "*"
