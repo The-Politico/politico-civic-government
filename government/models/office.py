@@ -90,11 +90,21 @@ class Office(CommonIdentifiersMixin, UUIDMixin, CivicBaseModel):
 
         super(Office, self).save(*args, **kwargs)
 
-    def get_natural_key_definition(self):
-        if self.body:
-            return ["body", "slug"]
+    @classmethod
+    def get_natural_key_definition(cls):
+        return ["body", "jurisdiction", "slug"]
 
-        return ["jurisdiction", "slug"]
+    def get_per_instance_natural_key_fields(self):
+        if self.body:
+            return [
+                _ if not _.startswith("jurisdiction__") else None
+                for _ in self.__class__.get_natural_key_fields()
+            ]
+
+        return [
+            _ if not _.startswith("body__") else None
+            for _ in self.get_natural_key_fields()
+        ]
 
     def get_uid_base_field(self):
         return slugify(
