@@ -14,11 +14,11 @@ django = "==2.2"
 djangorestframework = "*"
 "dj-database-url" = "*"
 "psycopg2-binary" = "*"
-"politico-civic-utils" = "~=1.0a1.dev1"
-"politico-civic-entity" = "~=1.0a1.dev1"
-"politico-civic-geography" = "~=1.0a1.dev2"
+"politico-civic-utils" = "~=1.0a2.dev4"
+"politico-civic-entity" = "~=1.0a1.dev2"
+"politico-civic-geography" = "~=1.0a1.dev5"
 government = {path = "./..",editable = true}
-us-elections = "*"
+us-elections = "~=0.4.4"
 
 [dev-packages]
 ipython = "*"
