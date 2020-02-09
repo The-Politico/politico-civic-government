@@ -16,31 +16,47 @@ from government.models import Office
 
 
 class Command(BaseCommand):
-    help = "Creates federal offices"
+    help = "Creates federal and state offices."
 
-    fed = Jurisdiction.objects.get(name="U.S. Federal Government")
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--cycle",
+            action="store",
+            dest="cycle",
+            default="2018",
+            help="Specify the election cycle you want to query against",
+        )
 
-    def build_house_offices(self):
-        election_year = ElectionYear(2020)
-        house_seats = election_year.seats.house
-        division_level = DivisionLevel.objects.get(name="district")
-        body = Body.objects.get(slug="house", jurisdiction=self.fed)
-        for seat in tqdm(house_seats):
-            division = Division.objects.get(
-                level=division_level,
-                parent__code=seat.state.fips,
-                code="00" if not seat.district else seat.district.zfill(2),
-            )
+    def handle(self, *args, **options):
+        print(f"Loading offices for {options['cycle']}...")
+        print("")
 
-            Office.objects.update_or_create(
-                jurisdiction=self.fed,
-                division=division,
-                body=body,
-                senate_class=None,
-                defaults={"name": seat.__str__(), "label": seat.__str__()},
-            )
+        self.election_year = ElectionYear(options["cycle"])
+        self.federal_government = Jurisdiction.objects.get(
+            name="U.S. Federal Government"
+        )
 
-    def build_senate_offices(self, year):
+        print("  - Creating U.S. Senate offices...")
+        self.build_senate_offices()
+        print("    Done!")
+        print("")
+
+        print("  - Creating U.S. House offices...")
+        self.build_house_offices()
+        print("    Done!")
+        print("")
+
+        print("  - Creating U.S. Executive office...")
+        self.build_presidency()
+        print("    Done!")
+        print("")
+
+        print("  - Creating state gubernatorial offices...")
+        self.build_governorships()
+        print("    Done!")
+        print("")
+
+    def build_senate_offices(self):
         def translate_senate_class(s):
             if s == "I":
                 return "1"
@@ -50,60 +66,85 @@ class Command(BaseCommand):
                 return "3"
             return s
 
-        election_year = ElectionYear(year)
-        senate_seats = election_year.seats.senate
+        senate_seats = self.election_year.federal.congress.seats.senate
         division_level = DivisionLevel.objects.get(name="state")
-        body = Body.objects.get(slug="senate", jurisdiction=self.fed)
+        body = Body.objects.get(
+            slug="senate", jurisdiction_id=self.federal_government.pk
+        )
+
         for seat in tqdm(senate_seats):
             division = Division.objects.get(
                 level=division_level, code=seat.state.fips
             )
+
             Office.objects.update_or_create(
-                jurisdiction=self.fed,
-                division=division,
+                division_id=division.pk,
+                jurisdiction_id=self.federal_government.pk,
                 body=body,
                 senate_class=translate_senate_class(seat.senate_class),
-                defaults={"name": seat.__str__(), "label": seat.__str__()},
+                defaults=dict(label=seat.__str__(), name=seat.__str__()),
             )
 
-    def build_governorships(self):
-        state_level = DivisionLevel.objects.get(name="state")
-
-        state_jurisdictions = Jurisdiction.objects.filter(
-            division__level=state_level
+    def build_house_offices(self):
+        house_seats = self.election_year.federal.congress.seats.house
+        division_level = DivisionLevel.objects.get(name="district")
+        body = Body.objects.get(
+            slug="house", jurisdiction_id=self.federal_government.pk
         )
 
-        print("Loading governorships")
-        for jurisdiction in tqdm(state_jurisdictions):
-            name = "{0} Governor".format(jurisdiction.division.name)
+        for seat in tqdm(house_seats):
+            division = Division.objects.get(
+                level=division_level,
+                parent__code=seat.state.fips,
+                code="00" if not seat.district else seat.district.zfill(2),
+            )
 
-            Office.objects.get_or_create(
-                name=name,
-                label=name,
-                jurisdiction=jurisdiction,
-                division=jurisdiction.division,
+            Office.objects.update_or_create(
+                division_id=division.pk,
+                jurisdiction_id=self.federal_government.pk,
+                body=body,
+                senate_class=None,
+                defaults=dict(label=seat.__str__(), name=seat.__str__()),
             )
 
     def build_presidency(self):
-        USA = Division.objects.get(code="00", level__name="country")
+        president_seat = self.election_year.federal.president
 
-        print("Loading presidency")
+        if president_seat is not None:
+            for i in tqdm(range(1)):
+                Office.objects.update_or_create(
+                    division_id=self.federal_government.division_id,
+                    jurisdiction_id=self.federal_government.pk,
+                    defaults=dict(
+                        label="U.S. President",
+                        name="President of the United States",
+                        short_label="President",
+                        slug="president",
+                    ),
+                )
 
-        Office.objects.get_or_create(
-            slug="president",
-            name="President of the United States",
-            label="U.S. President",
-            short_label="President",
-            jurisdiction=self.fed,
-            division=USA,
-        )
+    def build_governorships(self):
+        governor_seats = [
+            state.executive.chief
+            for state in self.election_year.states
+            if state.executive.chief is not None
+        ]
 
-    def handle(self, *args, **options):
-        print("Loading offices")
+        state_level = DivisionLevel.objects.get(name="state")
 
-        self.build_house_offices()
-        self.build_senate_offices(2018)
-        self.build_senate_offices(2020)
-        self.build_senate_offices(2022)
-        self.build_governorships()
-        self.build_presidency()
+        for seat in tqdm(governor_seats):
+            state_division = Division.objects.filter(
+                level_id=state_level.id
+            ).get(code_components__fips__state=seat.state.fips)
+
+            state_government_jurisdiction = Jurisdiction.objects.filter(
+                parent_id=self.federal_government.pk
+            ).get(division_id=state_division.pk)
+
+            office_name = f"{state_division.name} Governor"
+
+            Office.objects.update_or_create(
+                division_id=state_division.pk,
+                jurisdiction_id=state_government_jurisdiction.pk,
+                defaults=dict(label=office_name, name=office_name),
+            )
