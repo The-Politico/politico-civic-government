@@ -1,23 +1,26 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
 [requires]
-
 python_version = "3.6"
 
-[packages]
+[pipenv]
+allow_prereleases = true
 
-pytest = "*"
-"flake8" = "*"
-django = ">=2.0"
+[packages]
+django = "==2.2"
 djangorestframework = "*"
 "dj-database-url" = "*"
-"psycopg2" = "*"
-geography = {git = "ssh://git@github.com/The-Politico/politico-civic-geography", editable = true}
-entity = {git = "ssh://git@github.com/The-Politico/politico-civic-entity", editable = true}
-"government" = {path = "./..", editable = true}
+"psycopg2-binary" = "*"
+"politico-civic-utils" = "~=1.0a2.dev4"
+"politico-civic-entity" = "~=1.0a1.dev2"
+"politico-civic-geography" = "~=1.0a1.dev5"
+government = {path = "./..",editable = true}
+us-elections = "~=0.4.4"
 
 [dev-packages]
+ipython = "*"
+pytest = "*"
+"flake8" = "*"

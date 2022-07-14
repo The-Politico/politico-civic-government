@@ -1,8 +1,15 @@
+# Imports from other dependencies.
+from civic_utils.serializers import CommandLineListSerializer
+from civic_utils.serializers import NaturalKeySerializerMixin
+
+
+# Imports from government.
 from government.models import Jurisdiction
-from rest_framework import serializers
 
 
-class JurisdictionSerializer(serializers.ModelSerializer):
-    class Meta:
+class JurisdictionSerializer(
+    NaturalKeySerializerMixin, CommandLineListSerializer
+):
+    class Meta(CommandLineListSerializer.Meta):
         model = Jurisdiction
-        fields = '__all__'
+        fields = "__all__"

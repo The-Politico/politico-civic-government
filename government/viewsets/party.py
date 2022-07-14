@@ -1,7 +1,7 @@
+# Imports from government.
 from government.models import Party
 from government.serializers import PartySerializer
-
-from .base import BaseViewSet
+from government.viewsets.base import BaseViewSet
 
 
 class PartyViewSet(BaseViewSet):

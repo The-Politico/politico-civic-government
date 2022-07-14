@@ -1,8 +1,13 @@
+# Imports from other dependencies.
+from civic_utils.serializers import CommandLineListSerializer
+from civic_utils.serializers import NaturalKeySerializerMixin
+
+
+# Imports from government.
 from government.models import Body
-from rest_framework import serializers
 
 
-class BodySerializer(serializers.ModelSerializer):
-    class Meta:
+class BodySerializer(NaturalKeySerializerMixin, CommandLineListSerializer):
+    class Meta(CommandLineListSerializer.Meta):
         model = Body
-        fields = '__all__'
+        fields = "__all__"

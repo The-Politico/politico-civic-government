@@ -1,7 +1,7 @@
+# Imports from government.
 from government.models import Body
 from government.serializers import BodySerializer
-
-from .base import BaseViewSet
+from government.viewsets.base import BaseViewSet
 
 
 class BodyViewSet(BaseViewSet):

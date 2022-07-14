@@ -1,5 +1,8 @@
-# flake8: noqa
-from .body import Body
-from .jurisdiction import Jurisdiction
-from .office import Office
-from .party import Party
+# Imports from government.
+from government.models.body import Body
+from government.models.jurisdiction import Jurisdiction
+from government.models.office import Office
+from government.models.party import Party
+
+
+__all__ = ["Body", "Jurisdiction", "Office", "Party"]

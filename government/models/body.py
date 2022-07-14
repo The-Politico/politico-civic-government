@@ -1,12 +1,20 @@
-import uuid
-
+# Imports from Django.
 from django.db import models
+
+
+# Imports from other dependencies.
+from civic_utils.models import CivicBaseModel
+from civic_utils.models import CommonIdentifiersMixin
+from civic_utils.models import UUIDMixin
 from entity.models import Organization
+from uuslug import slugify
+
+
+# Imports from government.
 from government.constants import STOPWORDS
-from uuslug import slugify, uuslug
 
 
-class Body(models.Model):
+class Body(CommonIdentifiersMixin, UUIDMixin, CivicBaseModel):
     """
     A body represents a collection of offices or individuals organized around a
     common government or public service function.
@@ -21,27 +29,36 @@ class Body(models.Model):
         - florida/senate/
         - michigan/senate/
     """
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    uid = models.CharField(
-        max_length=500,
-        editable=False,
-        blank=True)
+
+    natural_key_fields = ["jurisdiction", "slug"]
+    uid_prefix = "body"
+    default_serializer = "government.serializers.BodySerializer"
 
     slug = models.SlugField(
-        blank=True, max_length=255, editable=True,
-        help_text="Customizable slug. Defaults to Org slug without stopwords.")
+        blank=True,
+        max_length=255,
+        editable=True,
+        help_text="Customizable slug. Defaults to Org slug without stopwords.",
+    )
+
     label = models.CharField(max_length=255, blank=True)
     short_label = models.CharField(max_length=50, null=True, blank=True)
 
     organization = models.OneToOneField(
-        Organization, related_name='government_body', on_delete=models.PROTECT)
-    jurisdiction = models.ForeignKey('Jurisdiction', on_delete=models.PROTECT)
+        Organization, related_name="government_body", on_delete=models.PROTECT
+    )
+    jurisdiction = models.ForeignKey("Jurisdiction", on_delete=models.PROTECT)
 
     parent = models.ForeignKey(
-        'self', null=True, blank=True, related_name='children',
-        on_delete=models.SET_NULL)
+        "self",
+        null=True,
+        blank=True,
+        related_name="children",
+        on_delete=models.SET_NULL,
+    )
 
     class Meta:
+        unique_together = ("jurisdiction", "slug")
         verbose_name_plural = "Bodies"
 
     def __str__(self):
@@ -49,22 +66,24 @@ class Body(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        **uid**: :code:`{jurisdiction.uid}_body:{slug}`
+        **uid field**: :code:`body:{slug}`
+        **identifier**: :code:`<jurisdiction uid>__<this uid>`
         """
-        stripped_name = ' '.join(
-            w for w in self.organization.name.split()
-            if w not in STOPWORDS
+        self.generate_common_identifiers(
+            always_overwrite_slug=False, always_overwrite_uid=True
         )
 
-        if not self.slug:
-            self.slug = uuslug(
-                stripped_name,
-                instance=self,
-                max_length=100,
-                separator='-',
-                start_no=2
-            )
-        self.uid = '{}_body:{}'.format(
-            self.jurisdiction.uid, slugify(stripped_name))
-
         super(Body, self).save(*args, **kwargs)
+
+    def get_uid_base_field(self):
+        return slugify(
+            " ".join(
+                w for w in self.organization.name.split() if w not in STOPWORDS
+            )
+        )
+
+    def get_uid_prefix(self):
+        return f"{self.jurisdiction.uid}__{self.uid_prefix}"
+
+    def get_uid_suffix(self):
+        return self.slug

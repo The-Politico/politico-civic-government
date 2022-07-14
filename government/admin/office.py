@@ -1,3 +1,4 @@
+# Imports from Django.
 from django.contrib import admin
 
 
@@ -7,29 +8,27 @@ def custom_titled_filter(title):
             instance = admin.FieldListFilter.create(*args, **kwargs)
             instance.title = title
             return instance
+
     return Wrapper
 
 
 class OfficeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'get_jurisdiction', 'get_body')
+    list_display = ("name", "get_jurisdiction", "get_body")
     list_filter = (
-        ('body__label', custom_titled_filter('body')),
-        ('jurisdiction__name', custom_titled_filter('jurisdiction'))
+        ("body__label", custom_titled_filter("body")),
+        ("jurisdiction__name", custom_titled_filter("jurisdiction")),
     )
-    search_fields = ('name', 'label')
-    ordering = ('name', 'body__label', 'jurisdiction__name')
-    readonly_fields = ('slug', 'uid')
+    search_fields = ("name", "label")
+    ordering = ("name", "body__label", "jurisdiction__name")
+    readonly_fields = ("slug", "uid")
 
     fieldsets = (
-        ('Names and labeling', {
-            'fields': ('name', 'label', 'short_label', 'senate_class')
-        }),
-        ('Relationships', {
-            'fields': ('division', 'body', 'jurisdiction')
-        }),
-        ('Record locators', {
-            'fields': ('slug', 'uid')
-        })
+        (
+            "Names and labeling",
+            {"fields": ("name", "label", "short_label", "senate_class")},
+        ),
+        ("Relationships", {"fields": ("division", "body", "jurisdiction")}),
+        ("Record locators", {"fields": ("slug", "uid")}),
     )
 
     def get_body(self, obj):
@@ -41,5 +40,5 @@ class OfficeAdmin(admin.ModelAdmin):
     def get_jurisdiction(self, obj):
         return obj.jurisdiction.name
 
-    get_body.short_description = 'Body'
-    get_jurisdiction.short_description = 'Jurisdiction'
+    get_body.short_description = "Body"
+    get_jurisdiction.short_description = "Jurisdiction"

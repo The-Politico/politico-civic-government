@@ -1,13 +1,29 @@
-from setuptools import find_packages, setup
+# Imports from python.
+import os
+from setuptools import find_packages
+from setuptools import setup
+
+
+# Imports from government.
+from government import __version__
+
+
+REPO_URL = "https://github.com/The-Politico/politico-civic-government/"
+
+PYPI_VERSION = ".".join(str(v) for v in __version__)
+
 
 setup(
     name="politico-civic-government",
-    version="0.1.5",
-    description="",
-    url="https://github.com/The-Politico/politico-civic-government",
+    version=PYPI_VERSION,
+    packages=find_packages(exclude=["docs", "tests", "example"]),
+    license="MIT",
+    url=REPO_URL,
+    download_url="{repo_url}archive/{version}.tar.gz".format(
+        **{"repo_url": REPO_URL, "version": PYPI_VERSION}
+    ),
     author="POLITICO interactive news",
     author_email="interactives@politico.com",
-    license="MIT",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Framework :: Django",
@@ -22,16 +38,20 @@ setup(
         "Topic :: Internet :: WWW/HTTP",
     ],
     keywords="",
-    packages=find_packages(exclude=["docs", "tests", "example"]),
     install_requires=[
         "django",
         "djangorestframework",
         "dj-database-url",
-        "psycopg2",
+        "psycopg2-binary",
+        "politico-civic-utils",
         "politico-civic-entity",
         "politico-civic-geography",
         "tqdm",
         "us",
+        "us-elections",
     ],
-    extras_require={"test": ["pytest"]},
+    extras_require={
+        "dev": ["sphinx", "sphinxcontrib-django", "sphinx-rtd-theme"],
+        "test": ["pytest"],
+    },
 )

@@ -1,5 +1,5 @@
-# flake8: noqa
-from .body import BodyViewSet
-from .jurisdiction import JurisdictionViewSet
-from .office import OfficeViewSet
-from .party import PartyViewSet
+# Imports from government.
+from government.viewsets.body import BodyViewSet
+from government.viewsets.jurisdiction import JurisdictionViewSet
+from government.viewsets.office import OfficeViewSet
+from government.viewsets.party import PartyViewSet
